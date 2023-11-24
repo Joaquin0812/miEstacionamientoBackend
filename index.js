@@ -79,7 +79,8 @@ app.post('/login', async (req, res) => {
   if (tipoUsuario === 'cliente') {
     const cliente = await Cliente.findOne({ email, password });
     if (cliente) {
-      res.send('User authenticated')
+      //res.send('User authenticated')
+      res.send(cliente)
     } else {
       res.status(401).send('Error')
     }
