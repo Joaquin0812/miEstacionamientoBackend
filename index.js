@@ -35,7 +35,7 @@ app.put('/estacionamiento/:id', async (req, res) => {
 
   let estacionamiento = await Estacionamiento.findById(id)
   estacionamiento.disponibilidad = estado
-  estacionamiento= await estacionamiento.save()
+  estacionamiento = await estacionamiento.save()
   res.send(estacionamiento);
 })
 
@@ -52,7 +52,7 @@ app.post('/db/populate', (req, res) => {
   // const dueño1 = new Dueño({ nombre: 'Juan Perez', email: "juan.perez@gmail.com", password: "12345", rut: "12345678-9", cuentaBancaria: { banco: 'Estado', tipoCuenta: 'Corriente', nroCuenta: '123124' } })
   // const dueño2 = new Dueño({ nombre: 'Jose Gonzalez', email: "jose.gonzalez@gmail.com", password: "12345", rut: "12345678-9", cuentaBancaria: { banco: 'Estado', tipoCuenta: 'Corriente', nroCuenta: '123124' } })
   // const dueño3 = new Dueño({ nombre: 'Ana Gomez', email: "ana.gomez@gmail.com", password: "12345", rut: "12345678-9", cuentaBancaria: { banco: 'Estado', tipoCuenta: 'Corriente', nroCuenta: '123124' } });
-  
+
   // dueño1.save().then(() => console.log('dueño1 created'));
   // dueño2.save().then(() => console.log('dueño2 created'));
   // dueño3.save().then(() => console.log('dueño3 created'));
@@ -65,24 +65,39 @@ app.post('/db/populate', (req, res) => {
   // estacionamiento2.save().then(() => console.log('estacionamiento2 created'));
   // estacionamiento3.save().then(() => console.log('estacionamiento3 created'));
 
-  const cliente1 = new Cliente ({nombre: 'Cristobal Campos', email: "cristobal.campos@gmail.com", password: "12345", rut: "22345653-1", cuentaBancaria: {banco: "Scotiabank", tipoCuenta: "Corriente", nroCuenta: "22446611"}})
-  const cliente2 = new Cliente ({nombre: 'Daniela Acevedo', email: "daniela.acevedo@gmail.com", password: "12345", rut: "18411234-k", cuentaBancaria: {banco: "Falabella", tipoCuenta: "Corriente", nroCuenta: "3269012"}})
-  const cliente3 = new Cliente ({nombre: 'Diego Osorio', email: "diego.osorio@gmail.com", password: "12345", rut: "14977254-2", cuentaBancaria: {banco: "Itau", tipoCuenta: "Corriente", nroCuenta: "00321456"}})
-  
-  cliente1.save(),then(() => console.log('cliente1 created'))
-  cliente2.save(),then(() => console.log('cliente2 created'))
-  cliente3.save(),then(() => console.log('cliente3 created'))
-  
+  const cliente1 = new Cliente({ nombre: 'Cristobal Campos', email: "cristobal.campos@gmail.com", password: "12345", rut: "22345653-1", cuentaBancaria: { banco: "Scotiabank", tipoCuenta: "Corriente", nroCuenta: "22446611" } })
+  const cliente2 = new Cliente({ nombre: 'Daniela Acevedo', email: "daniela.acevedo@gmail.com", password: "12345", rut: "18411234-k", cuentaBancaria: { banco: "Falabella", tipoCuenta: "Corriente", nroCuenta: "3269012" } })
+  const cliente3 = new Cliente({ nombre: 'Diego Osorio', email: "diego.osorio@gmail.com", password: "12345", rut: "14977254-2", cuentaBancaria: { banco: "Itau", tipoCuenta: "Corriente", nroCuenta: "00321456" } })
+
+  cliente1.save().then(() => console.log('cliente1 created'))
+  cliente2.save().then(() => console.log('cliente2 created'))
+  cliente3.save().then(() => console.log('cliente3 created'))
+
   res.send('Hello World!')
 })
 
 
 // Endpoint para Login
-app.post ('/login', async (req,res) => {
-  const { email, password, tipoCliente}   = req.query;
-  console.log (email,password,tipoCliente)
-  res.send("")
-  //const cliente = await Cliente.findOne({ email, password});
+app.post('/login', async (req, res) => {
+  const { email, password, tipoUsuario } = req.query;
+
+  if (tipoUsuario === 'cliente') {
+    const cliente = await Cliente.findOne({ email, password });
+    if (cliente) {
+      res.send('User authenticated')
+    } else {
+      res.status(401).send('Error')
+    }
+  } else if (tipoUsuario === 'dueño') {
+    const dueño = await Dueño.findOne({ email, password });
+    if (dueño) {
+      res.send('User authenticated')
+    } else {
+      res.status(401).send('Error')
+    }
+  } else {
+    res.status(400).send('tipoUsuario not found')
+  }
 })
 
 
