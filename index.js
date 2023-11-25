@@ -12,21 +12,29 @@ mongoose.connect(`mongodb+srv://hernandezjoac:${mongoDbPassword}@cluster0.xx9m4m
 const estacionamientoSchema = require('./models/estacionamiento')
 const dueñoSchema = require('./models/dueño')
 const clienteSchema = require('./models/cliente')
+const historialSchema = require('./models/historialreservas')
 
 const Estacionamiento = mongoose.model('Estacionamiento', estacionamientoSchema);
 const Dueño = mongoose.model('Dueño', dueñoSchema);
 const Cliente = mongoose.model('Cliente', clienteSchema);
-
+const HistorialReservas = mongoose.model('HistorialReservas', historialSchema)
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-//Endpoint para obtener todos los estacionamientos
+//Endpoint para obtener todos los estacionamientos disponibles
 app.get('/estacionamiento', async (req, res) => {
   const estado = req.query.estado
   const estacionamientos = await Estacionamiento.find({ disponibilidad: estado });
   res.send(estacionamientos);
+})
+
+app.get('/estacionamiento/byDueno', async (req, res) => {
+  const idDueno = req.query.idDueño
+  
+  const estacionamiento = await Estacionamiento.find({idDueño:idDueno})
+  res.send(estacionamiento);
 })
 
 app.put('/estacionamiento/:id', async (req, res) => {
@@ -38,6 +46,7 @@ app.put('/estacionamiento/:id', async (req, res) => {
   estacionamiento = await estacionamiento.save()
   res.send(estacionamiento);
 })
+
 
 // Endpoint para llenar la base de datos
 app.post('/db/populate', (req, res) => {
@@ -69,6 +78,10 @@ app.post('/db/populate', (req, res) => {
   // cliente2.save().then(() => console.log('cliente2 created'))
   // cliente3.save().then(() => console.log('cliente3 created'))
 
+  // POBLANDO HISTORIAL RESERVAS
+  const historial1 = new HistorialReservas({idDueño:'655ed6a0a5f27bcc7d24d3b3',rutcliente: '22345653-1', nombrecliente: 'Cristobal Campos', emailcliente: 'cristobal.campos@gmail.com', fecha: "25/11/2023", valor: '5600'})
+
+  historial1.save().then(() => console.log('historial1 created'))
   res.send('Hello World!')
 })
 
@@ -87,7 +100,8 @@ app.post('/login', async (req, res) => {
   } else if (tipoUsuario === 'dueño') {
     const dueño = await Dueño.findOne({ email, password });
     if (dueño) {
-      res.send('User authenticated')
+      //res.send('User authenticated')
+      res.send(dueño)
     } else {
       res.status(401).send('Error')
     }
