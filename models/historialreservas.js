@@ -7,7 +7,11 @@ const HistorialSchema = new mongoose.Schema({
     nombrecliente: String,
     emailcliente: String,
     fecha: String,
-    valor: Number
+    valor: Number,
+    calificacion: {
+        puntuacion: { type: Number, enum: ['1' ,'2', '3', '4', '5'], default: '1' },
+        comentario: { type: String, default: "" }
+    }    
 });
 
 module.exports = HistorialSchema;
