@@ -79,7 +79,7 @@ app.post('/db/populate', (req, res) => {
   // cliente3.save().then(() => console.log('cliente3 created'))
 
   // POBLANDO HISTORIAL RESERVAS
-  const historial1 = new HistorialReservas({idDueño:'655ed6a0a5f27bcc7d24d3b3',rutcliente: '22345653-1', nombrecliente: 'Cristobal Campos', emailcliente: 'cristobal.campos@gmail.com', fecha: "25/11/2023", valor: '5600'})
+  const historial1 = new HistorialReservas({idEstacionamiento:'655ed6a0a5f27bcc7d24d3b3',rutcliente: '22345653-1', nombrecliente: 'Cristobal Campos', emailcliente: 'cristobal.campos@gmail.com', fecha: "25/11/2023", valor: '5600'})
 
   historial1.save().then(() => console.log('historial1 created'))
   res.send('Hello World!')
@@ -118,4 +118,12 @@ app.get('/cliente', async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
+})
+
+// Consulta el historial de reservas según rut de cliente
+app.get('/historial/byCliente', async (req, res) => {
+  const rutCli = req.query.rutcliente
+
+  const historialReservas = await HistorialReservas.find({rutcliente:rutCli})
+  res.json(historialReservas);
 })

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 
 const HistorialSchema = new mongoose.Schema({
-    idDueño: String,
+    idEstacionamiento: String,
     rutcliente: String,
     nombrecliente: String,
     emailcliente: String,
