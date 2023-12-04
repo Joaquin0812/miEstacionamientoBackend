@@ -123,7 +123,13 @@ app.listen(port, () => {
 // Consulta el historial de reservas según rut de cliente
 app.get('/historial/byCliente', async (req, res) => {
   const rutCli = req.query.rutcliente
-
   const historialReservas = await HistorialReservas.find({rutcliente:rutCli})
   res.json(historialReservas);
+})
+
+app.get('/dueno/byEstacionamiento', async (req, res) => {
+  const idEstacionamiento = req.query.idEstacionamiento
+  const estacionamiento = await Estacionamiento.findById(idEstacionamiento)
+  const dueno = await Dueño.findById(estacionamiento.idDueño)
+  res.send(dueno);
 })
