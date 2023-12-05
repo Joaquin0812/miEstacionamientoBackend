@@ -133,3 +133,18 @@ app.get('/dueno/byEstacionamiento', async (req, res) => {
   const dueno = await Dueño.findById(estacionamiento.idDueño)
   res.send(dueno);
 })
+
+//Endpoint para meter la reserva al historial
+
+//INTENTO Endpoint para ingresar calificacion
+app.put('/historial/idEst', async (req, res) => {
+  const idEstHistorial = req.params.id
+  const puntuacion = req.query.puntuacion
+  const comentario = req.query.comentario
+
+  let historial = await HistorialReservas.findById(idEstHistorial)
+  historial.puntuacion = puntuacion
+  historial.comentario = comentario
+  historial = await historial.save()
+  res.send(historial);
+})
