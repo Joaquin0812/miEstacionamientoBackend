@@ -32,8 +32,8 @@ app.get('/estacionamiento', async (req, res) => {
 
 app.get('/estacionamiento/byDueno', async (req, res) => {
   const idDueno = req.query.idDueño
-  
-  const estacionamiento = await Estacionamiento.find({idDueño:idDueno})
+
+  const estacionamiento = await Estacionamiento.find({ idDueño: idDueno })
   res.send(estacionamiento);
 })
 
@@ -79,7 +79,7 @@ app.post('/db/populate', (req, res) => {
   // cliente3.save().then(() => console.log('cliente3 created'))
 
   // POBLANDO HISTORIAL RESERVAS
-  const historial1 = new HistorialReservas({idEstacionamiento:'655ed6a0a5f27bcc7d24d3b3',rutcliente: '22345653-1', nombrecliente: 'Cristobal Campos', emailcliente: 'cristobal.campos@gmail.com', fecha: "25/11/2023", valor: '5600'})
+  const historial1 = new HistorialReservas({ idEstacionamiento: '655ed6a0a5f27bcc7d24d3b3', rutcliente: '22345653-1', nombrecliente: 'Cristobal Campos', emailcliente: 'cristobal.campos@gmail.com', fecha: "25/11/2023", valor: '5600' })
 
   historial1.save().then(() => console.log('historial1 created'))
   res.send('Hello World!')
@@ -122,8 +122,8 @@ app.listen(port, () => {
 
 // Consulta el historial de reservas según rut de cliente
 app.get('/historial/byCliente', async (req, res) => {
-  const rutCli = req.query.rutcliente
-  const historialReservas = await HistorialReservas.find({rutcliente:rutCli})
+  const idCliente = req.query.idCliente
+  const historialReservas = await HistorialReservas.find({ idCliente })
   res.json(historialReservas);
 })
 
@@ -135,16 +135,25 @@ app.get('/dueno/byEstacionamiento', async (req, res) => {
 })
 
 //Endpoint para meter la reserva al historial
-
 //INTENTO Endpoint para ingresar calificacion
-app.put('/historial/idEst', async (req, res) => {
-  const idEstHistorial = req.params.id
-  const puntuacion = req.query.puntuacion
-  const comentario = req.query.comentario
+app.post('/historial', async (req, res) => {
+  const { idEstacionamiento, idCliente, fecha, tiempoDeUso } = req.query;
+  const historial = new HistorialReservas({ idEstacionamiento, idCliente, fecha, tiempoDeUso })
+  const savedHistorial = await historial.save();
+  res.send(savedHistorial);
+})
 
-  let historial = await HistorialReservas.findById(idEstHistorial)
-  historial.puntuacion = puntuacion
-  historial.comentario = comentario
+app.put('/historial/calificar', async (req, res) => {
+  const { tipoUsuario, idHistorial, puntuacion, comentario } = req.query;
+
+  let historial = await HistorialReservas.findById(idHistorial)
+  if (tipoUsuario === 'cliente') {
+    historial.calificacion.cliente.puntuacion = puntuacion
+    historial.calificacion.cliente.comentario = comentario
+  } else if (tipoUsuario === 'dueno') {
+    historial.calificacion.dueno.puntuacion = puntuacion
+    historial.calificacion.dueno.comentario = comentario
+  }
   historial = await historial.save()
   res.send(historial);
 })

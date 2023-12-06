@@ -3,15 +3,19 @@ const mongoose = require('mongoose');
 
 const HistorialSchema = new mongoose.Schema({
     idEstacionamiento: String,
-    rutcliente: String,
-    nombrecliente: String,
-    emailcliente: String,
+    idCliente: String,
     fecha: String,
-    valor: Number,
+    tiempoDeUso: Number,
     calificacion: {
-        puntuacion: { type: Number, enum: ['1' ,'2', '3', '4', '5'], default: '1' },
-        comentario: { type: String, default: "" }
-    }    
+        dueno: {
+            puntuacion: { type: String, enum: ['0', '1', '2', '3', '4', '5'], default: '0' },
+            comentario: { type: String, default: "" }
+        },
+        cliente: {
+            puntuacion: { type: String, enum: ['0', '1', '2', '3', '4', '5'], default: '0' },
+            comentario: { type: String, default: "" }
+        }
+    }
 });
 
 module.exports = HistorialSchema;
