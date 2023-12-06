@@ -157,3 +157,10 @@ app.put('/historial/calificar', async (req, res) => {
   historial = await historial.save()
   res.send(historial);
 })
+
+// Consulta el historial de arrendatarios según id de dueño
+app.get('/historial/arrendatarios', async (req, res) => {
+  const { idEstacionamiento } = req.query;
+  const historialReservas = await HistorialReservas.find({ idEstacionamiento })
+  res.json(historialReservas);
+})
