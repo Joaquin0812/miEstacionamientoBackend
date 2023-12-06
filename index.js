@@ -135,7 +135,6 @@ app.get('/dueno/byEstacionamiento', async (req, res) => {
 })
 
 //Endpoint para meter la reserva al historial
-//INTENTO Endpoint para ingresar calificacion
 app.post('/historial', async (req, res) => {
   const { idEstacionamiento, idCliente, fecha, tiempoDeUso } = req.query;
   const historial = new HistorialReservas({ idEstacionamiento, idCliente, fecha, tiempoDeUso })
@@ -143,6 +142,7 @@ app.post('/historial', async (req, res) => {
   res.send(savedHistorial);
 })
 
+//INTENTO Endpoint para ingresar calificacion
 app.put('/historial/calificar', async (req, res) => {
   const { tipoUsuario, idHistorial, puntuacion, comentario } = req.query;
 
