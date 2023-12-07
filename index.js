@@ -13,11 +13,13 @@ const estacionamientoSchema = require('./models/estacionamiento')
 const dueñoSchema = require('./models/dueño')
 const clienteSchema = require('./models/cliente')
 const historialSchema = require('./models/historialreservas')
+const pagosSchema = require ('./models/pagos')
 
 const Estacionamiento = mongoose.model('Estacionamiento', estacionamientoSchema);
 const Dueño = mongoose.model('Dueño', dueñoSchema);
 const Cliente = mongoose.model('Cliente', clienteSchema);
 const HistorialReservas = mongoose.model('HistorialReservas', historialSchema)
+const Pagos = mongoose.model('Pagos', pagosSchema)
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -144,6 +146,15 @@ app.post('/historial', async (req, res) => {
   res.send(savedHistorial);
 })
 
+//  Endpoint para generar registro dentro de pago
+
+app.post('/pagos/', async (req, res) => {
+  const { idCliente, idEstacionamiento, fecha, banco, nroCuenta, tipoCuenta, monto } = req.query;
+  const pago = new Pagos({ idEstacionamiento, idCliente, fecha, banco, nroCuenta, tipoCuenta, monto })
+  const savedPago = await pago.save();
+  res.send(savedPago);
+})
+
 //Endpoint para ingresar calificacion, tanto usuario como dueño
 app.put('/historial/calificar', async (req, res) => {
   const { tipoUsuario, idHistorial, puntuacion, comentario } = req.query;
@@ -179,6 +190,19 @@ app.get('/estacionamiento/ids', async (req, res) => {
   res.json(historialReservas)
 })
 
+//  Traer pagos según id de dueño
+
+app.get('/pagos/ids', async (req, res) => {
+  const idDueno = req.query.idDueño
+  let estacionamiento = await Estacionamiento.find({ idDueño: idDueno })
+  let ids = estacionamiento.map(function (id) {
+    return `${id._id}`
+  })
+  const pagos = await Pagos.find({ idEstacionamiento: { $in: ids } })
+  res.json(pagos)
+})
+
+
 //  Endpoint para Agregar Estacionamiento
 app.post('/estacionamiento/', async (req, res) => {
   const { idDueño, direccion, latitud, longitud, valorPorHora } = req.query;
@@ -187,3 +211,5 @@ app.post('/estacionamiento/', async (req, res) => {
   res.send(savedEstacionamiento)
   console.log(savedEstacionamiento);
 })
+
+
