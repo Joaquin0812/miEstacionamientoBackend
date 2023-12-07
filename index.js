@@ -64,10 +64,12 @@ app.post('/db/populate', (req, res) => {
   // const estacionamiento1 = new Estacionamiento({ idDueño: '655ecd2f7605921d2bffae1b', direccion: 'Moneda 123', disponibilidad: 'disponible', latitud: '-33.12123', longitud: '100.1234122' })
   // const estacionamiento2 = new Estacionamiento({ idDueño: '655ecd968daa8d3fe80ffbcd', direccion: 'Catedral 1401', disponibilidad: 'disponible', latitud: '-33.12123', longitud: '100.1234122' })
   // const estacionamiento3 = new Estacionamiento({ idDueño: '655ecd968daa8d3fe80ffbce', direccion: 'Amunategui 800', disponibilidad: 'disponible', latitud: '-33.12123', longitud: '100.1234122' })
+  // const estacionamiento4 = new Estacionamiento({ idDueño: '655ecd968daa8d3fe80ffbce', direccion: 'Amunategui 801', disponibilidad: 'disponible', latitud: '-33.12123', longitud: '100.1234122' })
 
   // estacionamiento1.save().then(() => console.log('estacionamiento1 created'));
   // estacionamiento2.save().then(() => console.log('estacionamiento2 created'));
   // estacionamiento3.save().then(() => console.log('estacionamiento3 created'));
+  // estacionamiento4.save().then(() => console.log('estacionamiento4 created'));
 
   // POBLANDO CLIENTES
   // const cliente1 = new Cliente({ nombre: 'Cristobal Campos', email: "cristobal.campos@gmail.com", password: "12345", rut: "22345653-1", cuentaBancaria: { banco: "Scotiabank", tipoCuenta: "Corriente", nroCuenta: "22446611" } })
@@ -79,9 +81,9 @@ app.post('/db/populate', (req, res) => {
   // cliente3.save().then(() => console.log('cliente3 created'))
 
   // POBLANDO HISTORIAL RESERVAS
-  const historial1 = new HistorialReservas({ idEstacionamiento: '655ed6a0a5f27bcc7d24d3b3', rutcliente: '22345653-1', nombrecliente: 'Cristobal Campos', emailcliente: 'cristobal.campos@gmail.com', fecha: "25/11/2023", valor: '5600' })
+  // const historial1 = new HistorialReservas({ idEstacionamiento: '655ed6a0a5f27bcc7d24d3b3', rutcliente: '22345653-1', nombrecliente: 'Cristobal Campos', emailcliente: 'cristobal.campos@gmail.com', fecha: "25/11/2023", valor: '5600' })
 
-  historial1.save().then(() => console.log('historial1 created'))
+  // historial1.save().then(() => console.log('historial1 created'))
   res.send('Hello World!')
 })
 
@@ -158,9 +160,23 @@ app.put('/historial/calificar', async (req, res) => {
   res.send(historial);
 })
 
-// Consulta el historial de arrendatarios según id de dueño
+
+// Consulta el historial de reservas según id de estacionamiento
 app.get('/historial/arrendatarios', async (req, res) => {
   const { idEstacionamiento } = req.query;
   const historialReservas = await HistorialReservas.find({ idEstacionamiento })
   res.json(historialReservas);
+})
+
+
+//  Traer estacionamientos según id de Dueño y luego enlistar el id de los estacionamientos
+//    para luego mostrar el historial del dueño con sus estacionamientos.
+app.get('/estacionamiento/ids', async (req, res) => {
+  const idDueno = req.query.idDueño
+  let estacionamiento = await Estacionamiento.find({ idDueño: idDueno })
+  let ids = estacionamiento.map(function (id) {
+    return `${id._id}`
+  })
+  const historialReservas = await HistorialReservas.find({ idEstacionamiento: { $in: ids } })
+  res.json(historialReservas)
 })
