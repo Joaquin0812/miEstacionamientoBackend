@@ -144,7 +144,7 @@ app.post('/historial', async (req, res) => {
   res.send(savedHistorial);
 })
 
-//INTENTO Endpoint para ingresar calificacion
+//Endpoint para ingresar calificacion, tanto usuario como dueño
 app.put('/historial/calificar', async (req, res) => {
   const { tipoUsuario, idHistorial, puntuacion, comentario } = req.query;
 
@@ -160,14 +160,12 @@ app.put('/historial/calificar', async (req, res) => {
   res.send(historial);
 })
 
-
 // Consulta el historial de reservas según id de estacionamiento
 app.get('/historial/arrendatarios', async (req, res) => {
   const { idEstacionamiento } = req.query;
   const historialReservas = await HistorialReservas.find({ idEstacionamiento })
   res.json(historialReservas);
 })
-
 
 //  Traer estacionamientos según id de Dueño y luego enlistar el id de los estacionamientos
 //    para luego mostrar el historial del dueño con sus estacionamientos.
@@ -179,4 +177,13 @@ app.get('/estacionamiento/ids', async (req, res) => {
   })
   const historialReservas = await HistorialReservas.find({ idEstacionamiento: { $in: ids } })
   res.json(historialReservas)
+})
+
+//  Endpoint para Agregar Estacionamiento
+app.post('/estacionamiento/', async (req, res) => {
+  const { idDueño, direccion, latitud, longitud, valorPorHora } = req.query;
+  const estacionamiento = new Estacionamiento({ idDueño, direccion, latitud, longitud, valorPorHora })
+  const savedEstacionamiento = await estacionamiento.save();
+  res.send(savedEstacionamiento)
+  console.log(savedEstacionamiento);
 })
