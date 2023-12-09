@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const PagosSchema = new mongoose.Schema({
     idCliente: String,
+    nombreCliente: String,
     idEstacionamiento: String,
     fecha: String,
     banco: String,

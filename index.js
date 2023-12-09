@@ -149,8 +149,8 @@ app.post('/historial', async (req, res) => {
 //  Endpoint para generar registro dentro de pago
 
 app.post('/pagos/', async (req, res) => {
-  const { idCliente, idEstacionamiento, fecha, banco, nroCuenta, tipoCuenta, monto } = req.query;
-  const pago = new Pagos({ idEstacionamiento, idCliente, fecha, banco, nroCuenta, tipoCuenta, monto })
+  const { idCliente, idEstacionamiento, nombreCliente, fecha, banco, nroCuenta, tipoCuenta, monto } = req.query;
+  const pago = new Pagos({ idEstacionamiento, idCliente, nombreCliente, fecha, banco, nroCuenta, tipoCuenta, monto })
   const savedPago = await pago.save();
   res.send(savedPago);
 })
